@@ -36,11 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/shop")
+                    .authorizeRequests()
+                .antMatchers("/products", "/logout")
                     .hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority())
-                .antMatchers("/logout")
-                    .hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority())
+                .antMatchers("/add")
+                    .hasAuthority(Role.ADMIN.getAuthority())
                 .antMatchers("/css/**")
                     .permitAll()
                 .antMatchers("/", "/login", "/registration").anonymous()

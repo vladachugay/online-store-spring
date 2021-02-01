@@ -10,19 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
-public class MainController {
+public class RegistrationController {
 
     private final UserService userService;
-
-    @GetMapping("/")
-    public String getMainPage() {
-        return "main";
-    }
-
-    @GetMapping("/login")
-    public String getLogin() {
-        return "login";
-    }
 
     @GetMapping("/registration")
     public String getRegistration() {
@@ -36,13 +26,6 @@ public class MainController {
         userService.saveUser(userDTO);
         return "redirect:/login";
     }
-
-
-    @GetMapping("/shop")
-    public String getShop() {
-        return "shop";
-    }
-
 
 
 }

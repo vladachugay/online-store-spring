@@ -3,6 +3,7 @@ package com.vlados.entity;
 import com.vlados.dto.UserDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
