@@ -1,6 +1,5 @@
 package com.vlados.entity;
 
-
 import com.vlados.dto.ProductDTO;
 import lombok.*;
 
@@ -29,6 +28,7 @@ public class Product {
     private Material material;
     private String picPath;
     private LocalDateTime date;
+    private String description;
     @Column(name = "price", precision = 8, scale = 2)
     private BigDecimal price;
     private Integer amount;
@@ -40,6 +40,9 @@ public class Product {
         category = productDTO.getCategory();
         price = productDTO.getPrice();
         amount = productDTO.getAmount();
+        picPath = productDTO.getPicPath();
+        material = productDTO.getMaterial();
+        description = productDTO.getDescription();
     }
 }
 

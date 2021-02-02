@@ -23,7 +23,7 @@
 <body>
 <div th:replace="partials/adminNav :: nav"></div>
 <div class="container mt-2">
-    <form method="post" action="/add">
+    <form method="post" action="/add" enctype="multipart/form-data">
         <div class="form-group">
             <label th:text="#{product.name}"></label>
             <input type="text" name="name" id="name" class="form-control" th:placeholder="#{product.name}">
@@ -34,10 +34,9 @@
                 <label class="input-group-text" for="category">[[#{product.category}]]</label>
             </div>
             <select class="custom-select" name="category" id="category">
-                <option selected value="RING">[[#{product.category.ring}]]</option>
-                <option value="NECKLACE">[[#{product.category.necklace}]]</option>
-                <option value="BRACELET">[[#{product.category.earring}]]</option>
-                <option value="EARRING">[[#{product.category.bracelet}]]</option>
+                <option th:each="category: ${categories}" th:value="${category.name()}">
+                    [[#{${category.name()}}]]
+                </option>
             </select>
         </div>
 
@@ -45,18 +44,21 @@
             <div class="input-group-prepend">
                 <label class="input-group-text" for="material">[[#{product.material}]]</label>
             </div>
-            <select class="custom-select" id="material">
-                <option selected value="SILVER">[[#{product.material.silver}]]</option>
-                <option value="YELLOW_GOLD">[[#{product.material.yellow_gold}]]</option>
-                <option value="WHITE_GOLD">[[#{product.material.pink_gold}]]</option>
-                <option value="PLATINUM">[[#{product.material.platinum}]]</option>
-                <option value="DIAMONDS">[[#{product.material.diamonds}]]</option>
+            <select class="custom-select" name="material" id="material">
+                <option th:each="material: ${materials}" th:value="${material.name()}">
+                    [[#{${material.name()}}]]
+                </option>
             </select>
         </div>
 
         <div class="custom-file">
-            <input type="file" class="custom-file-input" id="file" required>
+            <input type="file" class="custom-file-input" id="file" name="file" required>
             <label class="custom-file-label" for="file">[[#{product.choose_file}]]</label>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="description">[[#{product.description}]]</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
         </div>
 
         <div class="form-group">

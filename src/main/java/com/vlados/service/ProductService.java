@@ -1,5 +1,6 @@
 package com.vlados.service;
 
+import com.vlados.dto.ProductDTO;
 import com.vlados.entity.Product;
 import com.vlados.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,5 +21,22 @@ public class ProductService {
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    public void saveProduct(Product product) {
+            productRepository.save(product);
+    }
+
+    public void updateProduct(Product product) {
+        productRepository.updateProductById(product.getId(), product.getName(),
+                product.getCategory(),
+                product.getMaterial(),
+                product.getPicPath(),
+                product.getPrice(),
+                product.getDescription());
+    }
+
+    public void deleteProduct(Product product) {
+        productRepository.delete(product);
     }
 }
