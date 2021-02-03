@@ -33,4 +33,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                            @Param(value = "picPath") String picPath,
                            @Param(value = "price") BigDecimal price,
                            @Param(value = "description") String description);
+
+    @Query("select p from products p  " +
+            "where p.material = :material AND " +
+            "p.category = :category AND p.price in (:from, :to)")
+    Page<Product> findProductsByMaterialAndCategoryAndPriceBetween(Pageable pageable,
+                                                                   @Param(value = "material") String material,
+                                                                   @Param(value = "category") String category,
+                                                                   @Param(value = "from") int from,
+                                                                   @Param(value = "to") int to);
 }

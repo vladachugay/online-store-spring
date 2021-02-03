@@ -4,6 +4,7 @@ import com.vlados.dto.ProductDTO;
 import com.vlados.entity.Material;
 import com.vlados.entity.Product;
 import com.vlados.entity.ProductCategory;
+import com.vlados.entity.Sorting;
 import com.vlados.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,9 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +49,9 @@ public class ProductController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
+        model.addAttribute("sorting", Sorting.values());
+        model.addAttribute("categories", ProductCategory.values());
+        model.addAttribute("materials", Material.values());
         model.addAttribute("currentPage", currentPage);
         return "products";
     }
@@ -104,7 +110,16 @@ public class ProductController {
     @GetMapping("/{product}")
     public String product(@PathVariable Product product, Model model) {
         model.addAttribute("product", product);
-
         return "product";
+    }
+
+    @PostMapping("/filter")
+    public String filter(HttpServletRequest request) {
+        System.out.println(request.getParameter("category"));
+        System.out.println(request.getParameter("material"));
+        System.out.println(request.getParameter("sorting"));
+        System.out.println(request.getParameter("price_from"));
+        System.out.println(request.getParameter("price_to"));
+        return "redirect:/products";
     }
 }
