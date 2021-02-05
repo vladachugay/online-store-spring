@@ -4,25 +4,23 @@ import com.vlados.dto.ProductDTO;
 import com.vlados.entity.Material;
 import com.vlados.entity.Product;
 import com.vlados.entity.ProductCategory;
-import com.vlados.entity.Sorting;
+import com.vlados.entity.SortCriteria;
+import com.vlados.repository.ProductRepository;
 import com.vlados.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,6 +30,7 @@ import java.util.stream.IntStream;
 @RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @GetMapping
     public String getProducts(Model model, @RequestParam(required = false) Optional<Integer> page,
@@ -49,7 +48,7 @@ public class ProductController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-        model.addAttribute("sorting", Sorting.values());
+        model.addAttribute("sorting", SortCriteria.values());
         model.addAttribute("categories", ProductCategory.values());
         model.addAttribute("materials", Material.values());
         model.addAttribute("currentPage", currentPage);
@@ -94,8 +93,12 @@ public class ProductController {
     }
 
     @PostMapping("edit/{product}")
-    public String editProduct(@PathVariable Product product, @RequestParam("file") MultipartFile file) {
+    public String editProduct(@PathVariable Product product, @RequestParam("file") MultipartFile file,
+                              @RequestParam("name") String name){
+
         //TODO convert file to picPath
+        //TODO fill product with new values to update it
+        product.setName(name);
         System.out.println(product);
         productService.updateProduct(product);
         return "redirect:/products";
@@ -114,12 +117,35 @@ public class ProductController {
     }
 
     @PostMapping("/filter")
-    public String filter(HttpServletRequest request) {
-        System.out.println(request.getParameter("category"));
-        System.out.println(request.getParameter("material"));
-        System.out.println(request.getParameter("sorting"));
-        System.out.println(request.getParameter("price_from"));
-        System.out.println(request.getParameter("price_to"));
-        return "redirect:/products";
+    public String filter(Model model, HttpServletRequest request,
+                         @RequestParam(required = false) Optional<Integer> page,
+                         @RequestParam(required = false) Optional<Integer> size,
+                         @RequestParam(name = "material") String material,
+                         @RequestParam(name = "category") String category,
+                         @RequestParam(name = "sortcriteria") String sortingCriteria,
+                         @RequestParam(name = "price_from", required = false) Optional<BigDecimal> from,
+                         @RequestParam(name = "price_to", required = false) Optional<BigDecimal> to) {
+        //TODO process nulls
+        //TODO avoid duplicates
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(9);
+        Page<Product> productPage = productService.getFilteredProducts(PageRequest.of(currentPage - 1, pageSize),
+                material, category, from.orElse(new BigDecimal("0")), to.orElse(new BigDecimal(100000)), sortingCriteria);
+
+        model.addAttribute("productPage", productPage);
+
+        int totalPages = productPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        model.addAttribute("sorting", SortCriteria.values());
+        model.addAttribute("categories", ProductCategory.values());
+        model.addAttribute("materials", Material.values());
+        model.addAttribute("currentPage", currentPage);
+        return "products";
     }
 }

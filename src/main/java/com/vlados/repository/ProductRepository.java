@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
     Page<Product> findByOrderByName(Pageable pageable);
 
     @Transactional
@@ -27,19 +28,31 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "p.description = :description " +
             "where p.id = :id")
     void updateProductById(@Param(value = "id") Long id,
-                           @Param(value = "name") String name,
-                           @Param(value = "category") ProductCategory category,
-                           @Param(value = "material") Material material,
-                           @Param(value = "picPath") String picPath,
-                           @Param(value = "price") BigDecimal price,
-                           @Param(value = "description") String description);
+                                   @Param(value = "name") String name,
+                                   @Param(value = "category") ProductCategory category,
+                                   @Param(value = "material") Material material,
+                                   @Param(value = "picPath") String picPath,
+                                   @Param(value = "price") BigDecimal price,
+                                   @Param(value = "description") String description);
 
-    @Query("select p from products p  " +
-            "where p.material = :material AND " +
-            "p.category = :category AND p.price in (:from, :to)")
     Page<Product> findProductsByMaterialAndCategoryAndPriceBetween(Pageable pageable,
-                                                                   @Param(value = "material") String material,
-                                                                   @Param(value = "category") String category,
-                                                                   @Param(value = "from") int from,
-                                                                   @Param(value = "to") int to);
+                                                                   @Param(value = "material") Material material,
+                                                                   @Param(value = "category") ProductCategory category,
+                                                                   @Param(value = "from") BigDecimal from,
+                                                                   @Param(value = "to") BigDecimal to);
+
+    Page<Product> findProductsByCategoryAndPriceBetween(Pageable pageable,
+                                                        @Param(value = "category") ProductCategory category,
+                                                        @Param(value = "from") BigDecimal from,
+                                                        @Param(value = "to") BigDecimal to);
+
+    Page<Product> findProductsByMaterialAndPriceBetween(Pageable pageable,
+                                                        @Param(value = "material") Material material,
+                                                        @Param(value = "from") BigDecimal from,
+                                                        @Param(value = "to") BigDecimal to);
+
+    Page<Product> findProductsByPriceBetween(Pageable pageable,
+                                           @Param(value = "from") BigDecimal from,
+                                           @Param(value = "to") BigDecimal to);
+
 }

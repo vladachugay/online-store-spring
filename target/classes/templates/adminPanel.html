@@ -21,7 +21,12 @@
 <body>
 <div th:replace="partials/adminNav :: nav"></div>
 <div class="container">
-    Orders
+    <a class="btn btn-outline-secondary my-3" href="/users"
+       th:text="#{lock_user}" role="button">
+    </a>
+    <a class="btn btn-outline-secondary my-3" href="/products/add"
+       th:text="#{product.add}" role="button">
+    </a>
         <table class="table">
             <thead>
             <tr>
