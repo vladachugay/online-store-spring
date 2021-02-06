@@ -33,12 +33,24 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @GetMapping
-    public String getProducts(Model model, @RequestParam(required = false) Optional<Integer> page,
-                              @RequestParam(required = false) Optional<Integer> size) {
+    public String getProducts(Model model,
+                              @RequestParam(required = false) Optional<Integer> page,
+                              @RequestParam(required = false) Optional<Integer> size,
+                              @RequestParam(name = "material", defaultValue = "ALL") String material,
+                              @RequestParam(name = "category", defaultValue = "ALL") String category,
+                              @RequestParam(name = "sortcriteria", defaultValue = "BY_NAME_ASC") String sortCriteria,
+                              @RequestParam(name = "price_from", defaultValue = "1") BigDecimal from,
+                              @RequestParam(name = "price_to", defaultValue = "100000") BigDecimal to) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(9);
-        Page<Product> productPage = productService.getProducts(PageRequest.of(currentPage - 1, pageSize));
+        Page<Product> productPage = productService.getFilteredProducts(PageRequest.of(currentPage - 1, pageSize),
+                material, category, from, to, sortCriteria);
         model.addAttribute("productPage", productPage);
+        model.addAttribute("material", material);
+        model.addAttribute("category", category);
+        model.addAttribute("sortcriteria", sortCriteria);
+        model.addAttribute("price_from", from);
+        model.addAttribute("price_to", to);
 
         int totalPages = productPage.getTotalPages();
         if (totalPages > 0) {
@@ -116,36 +128,4 @@ public class ProductController {
         return "product";
     }
 
-    @PostMapping("/filter")
-    public String filter(Model model, HttpServletRequest request,
-                         @RequestParam(required = false) Optional<Integer> page,
-                         @RequestParam(required = false) Optional<Integer> size,
-                         @RequestParam(name = "material") String material,
-                         @RequestParam(name = "category") String category,
-                         @RequestParam(name = "sortcriteria") String sortingCriteria,
-                         @RequestParam(name = "price_from", required = false) Optional<BigDecimal> from,
-                         @RequestParam(name = "price_to", required = false) Optional<BigDecimal> to) {
-        //TODO process nulls
-        //TODO avoid duplicates
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(9);
-        Page<Product> productPage = productService.getFilteredProducts(PageRequest.of(currentPage - 1, pageSize),
-                material, category, from.orElse(new BigDecimal("0")), to.orElse(new BigDecimal(100000)), sortingCriteria);
-
-        model.addAttribute("productPage", productPage);
-
-        int totalPages = productPage.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-
-        model.addAttribute("sorting", SortCriteria.values());
-        model.addAttribute("categories", ProductCategory.values());
-        model.addAttribute("materials", Material.values());
-        model.addAttribute("currentPage", currentPage);
-        return "products";
-    }
 }

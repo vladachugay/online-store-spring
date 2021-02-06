@@ -16,39 +16,38 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
             integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
             crossorigin="anonymous"></script>
-    <title>Product</title>
+    <title>Cart</title>
 </head>
 <body>
 <div th:replace="partials/adminNav :: nav"></div>
-
 <div class="container">
-    <div class="row">
-        <div class="col">
-            Picture will be located here
-        </div>
-        <div class="col">
-           <ul>
-               <li>
-                   <p th:text="${product.name}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.category}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.material}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.description}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.price}"></p>
-               </li>
-           </ul>
-        </div>
-    </div>
-    <form method="post" th:action="@{/addtocart/} + ${product.id}">
-        <button class="btn btn-pink" type="submit" th:text="#{product.add_to_cart}"></button>
-    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col" th:text="#{product.name}"></th>
+            <th scope="col" th:text="#{product.category}"></th>
+            <th scope="col" th:text="#{product.material}"></th>
+            <th scope="col" th:text="#{product.price}"></th>
+            <th scope="col" th:text="#{product.delete_from_cart}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p: ${cart}">
+            <th scope="row" th:text="${p.id}"></th>
+            <td th:text="${p.name}"></td>
+            <td th:text="${p.category}"></td>
+            <td th:text="${p.material}"></td>
+            <td th:text="${p.price}"></td>
+            <td>
+                <form method="post" th:action="@{/deletefromcart/} + ${p.id}">
+                    <button type="submit" class="btn btn-outline-danger" th:text="#{product.delete_from_cart}"></button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
+
 </body>
 </html>

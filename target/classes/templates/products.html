@@ -27,11 +27,15 @@
     </a>
     <div class="collapse my-3" id="collapseExample">
         <div class="form-group mt-3">
-            <form class="row g-4" method="post" action="/products/filter">
+            <form class="row g-4" method="get" action="/products">
                 <div class="col-md-3">
                     <label class="form-label" for="sorting" th:text="#{sort_by}"></label>
                     <select class="custom-select form-select-sm" name="sortcriteria" id="sorting">
-                        <option th:each="sort: ${sorting}" th:value="${sort.name()}">
+                        <option th:if="${sort.name()==sortcriteria}" th:each="sort: ${sorting}" th:value="${sort.name()}"
+                                selected>
+                            [[#{${sort.name()}}]]
+                        </option>
+                        <option th:unless="${sort.name()==sortcriteria}" th:each="sort: ${sorting}" th:value="${sort.name()}">
                             [[#{${sort.name()}}]]
                         </option>
                     </select>
@@ -40,8 +44,11 @@
                     <label class="form-label" for="category" th:text="#{product.category}"></label>
                     <select class="custom-select form-select-sm" name="category" id="category">
                         <option value="ALL">[[#{all}]]</option>
-                        <option th:each="category: ${categories}" th:value="${category.name()}">
-                            [[#{${category.name()}}]]
+                        <option th:if="${cat.name()==category}" th:each="cat: ${categories}" th:value="${cat.name()}" selected>
+                            [[#{${cat.name()}}]]
+                        </option>
+                        <option th:unless="${cat.name()==category}" th:each="cat: ${categories}" th:value="${cat.name()}">
+                            [[#{${cat.name()}}]]
                         </option>
                     </select>
                 </div>
@@ -49,8 +56,11 @@
                     <label class="form-label" for="material" th:text="#{product.material}"></label>
                     <select class="custom-select form-select-sm" name="material" id="material">
                         <option value="ALL">[[#{all}]]</option>
-                        <option th:each="material: ${materials}" th:value="${material.name()}">
-                            [[#{${material.name()}}]]
+                        <option th:if="${mat.name()==material}" th:each="mat: ${materials}" th:value="${mat.name()}" selected>
+                            [[#{${mat.name()}}]]
+                        </option>
+                        <option th:unless="${mat.name()==material}" th:each="mat: ${materials}" th:value="${mat.name()}">
+                            [[#{${mat.name()}}]]
                         </option>
                     </select>
                 </div>
@@ -58,9 +68,11 @@
                         Price between
                     <div class="form-group input-group-sm">
                         <label th:text="#{price_from}" for="price_from"></label>
-                        <input type="text" name="price_from" id="price_from" class="form-control">
+                        <input type="text" name="price_from" id="price_from" class="form-control"
+                               th:value="${price_from}">
                         <label th:text="#{price_to}" for="price_to"></label>
-                        <input type="text" name="price_to" id="price_to" class="form-control">
+                        <input type="text" name="price_to" id="price_to" class="form-control"
+                        th:value="${price_to}">
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -69,8 +81,8 @@
             </form>
         </div>
     </div>
-    <div class="card-columns">
-        <div th:each="product: ${productPage}">
+    <div class="row">
+        <div th:each="product: ${productPage}" class="col-md-4 my-3">
             <div class="card">
                 <img class="card-img-top" src="img/1.png">
                 <div class="card-body">
@@ -91,33 +103,39 @@
         <ul class="pagination d-flex justify-content-center">
             <li class="page-item" th:classappend="${currentPage <= 1} ? disabled">
                 <a class="page-link"
-                   th:href="@{/products(size=${productPage.size}, page=${currentPage - 1})}">
+                   th:href="@{/products(size=${productPage.size}, page=${currentPage - 1},
+                   material=${material}, category=${category}, sortcriteria=${sortcriteria},
+                   price_from=${price_from}, price_to=${price_to})}">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
             <li class="page-item" th:classappend="${pageNumber == productPage.number + 1} ? active"
                 th:if="${productPage.totalPages > 0}" th:each="pageNumber : ${pageNumbers}">
                 <a class="page-link" th:text="${pageNumber}"
-                   th:href="@{/products(size=${productPage.size}, page=${pageNumber})}"></a>
+                   th:href="@{/products(size=${productPage.size}, page=${pageNumber},
+                   material=${material}, category=${category}, sortcriteria=${sortcriteria},
+                   price_from=${price_from}, price_to=${price_to})}">
+                </a>
             </li>
             <li class="page-item" th:classappend="${currentPage >= productPage.totalPages} ? disabled">
                 <a class="page-link"
-                   th:href="@{/products(size=${productPage.size}, page=${currentPage + 1})}">
+                   th:href="@{/products(size=${productPage.size}, page=${currentPage + 1}, material=${material}, category=${category}, sortcriteria=${sortcriteria},
+                   price_from=${price_from}, price_to=${price_to})}">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
     </nav>
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-        crossorigin="anonymous"></script>
+<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"-->
+<!--        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"-->
+<!--        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"-->
+<!--        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"-->
+<!--        crossorigin="anonymous"></script>-->
 
 </body>
 </html>

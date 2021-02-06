@@ -46,7 +46,9 @@
            </ul>
         </div>
     </div>
-    <button class="btn btn-pink" th:text="#{product.add_to_cart}"></button>
+    <form method="post" th:action="@{/addtocart/} + ${product.id}">
+        <button class="btn btn-pink" type="submit" th:text="#{product.add_to_cart}"></button>
+    </form>
 </div>
 </body>
 </html>
