@@ -35,15 +35,30 @@
                 <th scope="col" th:text="#{order.date}"></th>
                 <th scope="col" th:text="#{order.total_price}"></th>
                 <th scope="col" th:text="#{order.status}"></th>
+                <th scope="col" th:text="#{change_status}"></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="order: ${orderPage}">
-                <th scope="row" th:text="${order.id}"></th>
+                <th scope="row" >
+                    <a th:href="@{/orders/} + ${order.id}" th:text="${order.id}"></a>
+                </th>
                 <td th:text="${order.user.email}"></td>
-                <td th:text="${order.dateOfCreation}"></td>
+                <td th:text="${order.creationDate}"></td>
                 <td th:text="${order.totalPrice}"></td>
                 <td th:text="${order.status}"></td>
+                <td>
+                    <form method="post" th:action="@{/orders/changestatus/} + ${order.id}">
+                        <select class="custom-select form-select-sm" name="status" id="status">
+                            <option th:each="status: ${statuses}"
+                                    th:value="${status.name()}"
+                                    th:selected="${status==order.status}"
+                                    th:text="#{${status}}"></option>
+                        </select>
+                        <button type="submit" class="btn btn-outline-success btn-sm my-2" th:text="#{change_status}"></button>
+                    </form>
+                </td>
+
             </tr>
             </tbody>
         </table>
@@ -69,5 +84,6 @@
         </ul>
     </nav>
 </div>
+<div th:replace="partials/footer :: footer"></div>
 </body>
 </html>

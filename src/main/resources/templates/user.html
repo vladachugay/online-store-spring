@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -19,7 +21,8 @@
     <title>Product</title>
 </head>
 <body>
-<div th:replace="partials/adminNav :: nav"></div>
+<div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
+<div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
 
 <div class="container">
     <div class="col">
@@ -63,6 +66,6 @@
         </tbody>
     </table>
 </div>
-
+<div th:replace="partials/footer :: footer"></div>
 </body>
 </html>

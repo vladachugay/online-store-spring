@@ -52,4 +52,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findProductsByPriceBetween(@Param(value = "from") BigDecimal from,
                                            @Param(value = "to") BigDecimal to);
 
+    @Transactional
+    @Modifying
+    @Query("update products p set p.amount = p.amount - 1 where p.id = :id")
+    void incrementAmountById(@Param(value = "id") Long id);
+
 }

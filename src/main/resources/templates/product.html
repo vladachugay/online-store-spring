@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -19,7 +21,10 @@
     <title>Product</title>
 </head>
 <body>
-<div th:replace="partials/adminNav :: nav"></div>
+
+<div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
+<div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
+<div sec:authorize="isAnonymous()" th:replace="partials/guestNav :: nav"></div>
 
 <div class="container">
     <div class="row">
@@ -46,9 +51,10 @@
            </ul>
         </div>
     </div>
-    <form method="post" th:action="@{/addtocart/} + ${product.id}">
-        <button class="btn btn-pink" type="submit" th:text="#{product.add_to_cart}"></button>
+    <form method="post" th:action="@{/cart/add/} + ${product.id}">
+        <button class="btn btn-pink" type="submit" th:disabled="product.amount==0" th:text="#{product.add_to_cart}"></button>
     </form>
 </div>
+<div th:replace="partials/footer :: footer"></div>
 </body>
 </html>

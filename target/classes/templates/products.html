@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -19,7 +21,11 @@
     <title>Products</title>
 </head>
 <body>
-<div th:replace="partials/adminNav :: nav"></div>
+
+<div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
+<div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
+<div sec:authorize="isAnonymous()" th:replace="partials/guestNav :: nav"></div>
+
 <div class="container">
     <a class="btn btn-outline-secondary my-3" data-toggle="collapse" href="#collapseExample" role="button"
        aria-expanded="false" aria-controls="collapseExample">
@@ -31,12 +37,10 @@
                 <div class="col-md-3">
                     <label class="form-label" for="sorting" th:text="#{sort_by}"></label>
                     <select class="custom-select form-select-sm" name="sortcriteria" id="sorting">
-                        <option th:if="${sort.name()==sortcriteria}" th:each="sort: ${sorting}" th:value="${sort.name()}"
-                                selected>
-                            [[#{${sort.name()}}]]
-                        </option>
-                        <option th:unless="${sort.name()==sortcriteria}" th:each="sort: ${sorting}" th:value="${sort.name()}">
-                            [[#{${sort.name()}}]]
+                        <option th:each="sort: ${sorting}"
+                                th:selected="${sort.name()==sortcriteria}"
+                                th:value="${sort.name()}"
+                                th:text="#{${sort.name()}}">
                         </option>
                     </select>
                 </div>
@@ -44,35 +48,33 @@
                     <label class="form-label" for="category" th:text="#{product.category}"></label>
                     <select class="custom-select form-select-sm" name="category" id="category">
                         <option value="ALL">[[#{all}]]</option>
-                        <option th:if="${cat.name()==category}" th:each="cat: ${categories}" th:value="${cat.name()}" selected>
-                            [[#{${cat.name()}}]]
-                        </option>
-                        <option th:unless="${cat.name()==category}" th:each="cat: ${categories}" th:value="${cat.name()}">
-                            [[#{${cat.name()}}]]
+                        <option th:each="cat: ${categories}"
+                                th:selected="${cat.name()==category}"
+                                th:value="${cat.name()}"
+                                th:text="#{${cat.name()}}">
                         </option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label" for="material" th:text="#{product.material}"></label>
                     <select class="custom-select form-select-sm" name="material" id="material">
-                        <option value="ALL">[[#{all}]]</option>
-                        <option th:if="${mat.name()==material}" th:each="mat: ${materials}" th:value="${mat.name()}" selected>
-                            [[#{${mat.name()}}]]
-                        </option>
-                        <option th:unless="${mat.name()==material}" th:each="mat: ${materials}" th:value="${mat.name()}">
-                            [[#{${mat.name()}}]]
+                        <option value="ALL" th:text="#{all}"></option>
+                        <option th:each="mat: ${materials}"
+                                th:selected="${mat.name()==material}"
+                                th:value="${mat.name()}"
+                                th:text="#{${mat.name()}}">
                         </option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                        Price between
+                    Price between
                     <div class="form-group input-group-sm">
                         <label th:text="#{price_from}" for="price_from"></label>
                         <input type="text" name="price_from" id="price_from" class="form-control"
                                th:value="${price_from}">
                         <label th:text="#{price_to}" for="price_to"></label>
                         <input type="text" name="price_to" id="price_to" class="form-control"
-                        th:value="${price_to}">
+                               th:value="${price_to}">
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -88,12 +90,15 @@
                 <div class="card-body">
                     <h5 class="card-title"><a th:href="@{/products/} + ${product.id}" th:text="${product.name}"></a>
                     </h5>
+                    <p class="card-text" th:text="#{${product.category}}"></p>
                     <p class="card-text" th:text="#{${product.material}}"></p>
                     <p class="card-text" th:text="${product.price}"></p>
-                    <a th:href="@{/products/edit/} + ${product.id}" class="btn btn-outline-secondary mr-1"
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/products/edit/} + ${product.id}"
+                       class="btn btn-outline-secondary mr-1"
                        th:text="#{product.edit}"></a>
                     <form th:action="@{/products/delete/} + ${product.id}" method="post">
-                        <button type="submit" class="btn btn-outline-danger" th:text="#{product.delete}"></button>
+                        <button sec:authorize="hasRole('ROLE_ADMIN')" type="submit" class="btn btn-outline-danger my-2"
+                                th:text="#{product.delete}"></button>
                     </form>
                 </div>
             </div>
@@ -127,15 +132,6 @@
         </ul>
     </nav>
 </div>
-<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"-->
-<!--        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"-->
-<!--        crossorigin="anonymous"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"-->
-<!--        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"-->
-<!--        crossorigin="anonymous"></script>-->
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"-->
-<!--        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"-->
-<!--        crossorigin="anonymous"></script>-->
-
+<div th:replace="partials/footer :: footer"></div>
 </body>
 </html>

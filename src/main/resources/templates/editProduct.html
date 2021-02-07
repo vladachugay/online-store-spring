@@ -18,7 +18,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
             integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
             crossorigin="anonymous"></script>
-    <title>Title</title>
+    <title th:text="#{product.edit}"></title>
 </head>
 <body>
 <div th:replace="partials/adminNav :: nav"></div>
@@ -31,39 +31,37 @@
 
         <div class="input-group mb-3">
             <div class="input-group-prepend">
-                <label class="input-group-text" for="category">[[#{product.category}]]</label>
+                <label class="input-group-text" for="category" th:text="#{product.category}"></label>
             </div>
             <select class="custom-select" name="category" id="category">
-                <option th:each="category: ${categories}" th:if="${category==product.category}" th:value="${category.name()}" selected>
-                    [[#{${category.name()}}]]
-                </option>
-                <option th:each="category: ${categories}" th:unless="${category==product.category}" th:value="${category.name()}">
-                    [[#{${category.name()}}]]
+                <option th:each="category: ${categories}"
+                        th:selected="${category==product.category}"
+                        th:value="${category.name()}"
+                        th:text="#{${category.name()}}">
                 </option>
             </select>
         </div>
 
         <div class="input-group mb-3">
             <div class="input-group-prepend">
-                <label class="input-group-text" for="material">[[#{product.material}]]</label>
+                <label class="input-group-text" for="material" th:text="#{product.material}"></label>
             </div>
             <select class="custom-select" name="material" id="material">
-                <option th:each="material: ${materials}" th:if="${material==product.material}" th:value="${material.name()}" selected>
-                    [[#{${material.name()}}]]
-                </option>
-                <option th:each="material: ${materials}" th:unless="${material==product.material}" th:value="${material.name()}">
-                    [[#{${material.name()}}]]
+                <option th:each="material: ${materials}"
+                        th:value="${material.name()}"
+                        th:selected="${material==product.material}"
+                        th:text="#{${material.name()}}">
                 </option>
             </select>
         </div>
 
         <div class="custom-file">
             <input type="file" class="custom-file-input" id="file" name="file">
-            <label class="custom-file-label" for="file">[[#{product.choose_file}]]</label>
+            <label class="custom-file-label" for="file" th:text="#{product.choose_file}"></label>
         </div>
 
         <div class="form-group mt-3">
-            <label for="description">[[#{product.description}]]</label>
+            <label for="description" th:text="#{product.description}"></label>
             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
         </div>
 
@@ -77,8 +75,9 @@
             <input type="text" name="amount" id="amount" class="form-control" th:value="${product.amount}">
         </div>
 
-        <button type="submit" class="btn btn-pink">[[#{product.edit}]]</button>
+        <button type="submit" class="btn btn-pink" th:text="#{product.edit}"></button>
     </form>
 </div>
+<div th:replace="partials/footer :: footer"></div>
 </body>
 </html>

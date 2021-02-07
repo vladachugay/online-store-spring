@@ -4,16 +4,18 @@ import com.vlados.dto.ProductDTO;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
 @Entity(name = "products")
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"name"})})
@@ -32,6 +34,7 @@ public class Product {
     private String description;
     @Column(name = "price", precision = 8, scale = 2)
     private BigDecimal price;
+    @Min(value = 0)
     private Integer amount;
     @ManyToMany(mappedBy = "products")
     private Set<Order> orders;
@@ -51,13 +54,12 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id.equals(product.id) &&
-                name.equals(product.name);
+        return Objects.equals(id, product.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }
 

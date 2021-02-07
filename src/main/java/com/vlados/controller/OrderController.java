@@ -1,46 +1,62 @@
 package com.vlados.controller;
 
+import com.vlados.entity.Cart;
 import com.vlados.entity.Order;
+import com.vlados.entity.OrderStatus;
 import com.vlados.entity.Product;
 import com.vlados.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
 public class OrderController {
 
+    private final Cart cart;
     private final OrderService orderService;
 
-    @GetMapping("/admin")
-    public String getAdminPanel(Model model, @RequestParam(required = false) Optional<Integer> page,
-                                @RequestParam(required = false) Optional<Integer> size) {
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(10);
-        Page<Order> orderPage = orderService.getOrders(PageRequest.of(currentPage - 1, pageSize));
-        model.addAttribute("orderPage", orderPage);
+    @GetMapping("/cart")
+    public String cart(Model model) {
+        model.addAttribute("cart", cart);
+        return "cart";
+    }
 
-        int totalPages = orderPage.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
+    @PostMapping("cart/add/{product}")
+    public String addToCart(@PathVariable Product product) {
+        cart.addProduct(product);
+        //TODO return valid page
+        return "redirect:/products/" + product.getId();
+    }
 
-        model.addAttribute("currentPage", currentPage);
-        return "adminPanel";
+    @PostMapping("cart/delete/{product}")
+    public String deleteFromCart(@PathVariable Product product) {
+        cart.deleteProduct(product);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("orders/create")
+    public String createOrder() {
+        orderService.createOrder(cart);
+        cart.clear();
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/orders/{order}")
+    public String getOrder(@PathVariable Order order, Model model) {
+        model.addAttribute("order", order);
+        //TODO some logic
+        return "order";
+    }
+
+    @PostMapping("/orders/changestatus/{order}")
+    public String changeStatus(@RequestParam OrderStatus status,
+                               @PathVariable Order order) {
+        orderService.changeStatus(status, order);
+        return "redirect:/admin";
     }
 }

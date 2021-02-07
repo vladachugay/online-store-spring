@@ -1,7 +1,6 @@
 package com.vlados.service;
 
 import com.vlados.dto.UserDTO;
-import com.vlados.entity.Role;
 import com.vlados.entity.User;
 import com.vlados.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Service

@@ -18,50 +18,51 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
             integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
             crossorigin="anonymous"></script>
-    <title>Product</title>
+    <title th:text="#{order}"></title>
 </head>
 <body>
+
 <div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
 <div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
 
 <div class="container">
-    <div class="col">
+    <div class="col-md-6">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
-                <label for="fullname" class="font-weight-light" th:text="#{fullName}"></label>
-                <p th:text="${user.fullName}" id="fullname"></p>
+                <label for="creationDate" class="font-weight-light" th:text="#{order.date}"></label>
+                <p th:text="${order.creationDate}" id="creationDate"></p>
             </li>
             <li class="list-group-item">
                 <label for="username" class="font-weight-light" th:text="#{username}"></label>
-                <p th:text="${user.username}" id="username"></p>
+                <p th:text="${order.user.username}" id="username"></p>
             </li>
             <li class="list-group-item">
-                <label for="email" class="font-weight-light" th:text="#{email}"></label>
-                <p th:text="${user.email}" id="email"></p>
+                <label for="status" class="font-weight-light" th:text="#{order.status}"></label>
+                <p th:text="#{${order.status}}" id="status"></p>
             </li>
             <li class="list-group-item">
-                <label for="phonenumber" class="font-weight-light" th:text="#{phoneNumber}"></label>
-                <p th:text="${user.phoneNumber}" id="phonenumber"></p>
+                <label for="totalPrice" class="font-weight-light" th:text="#{order.total_price}"></label>
+                <p th:text="${order.totalPrice}" id="totalPrice"></p>
             </li>
         </ul>
     </div>
 
-    <div class="col-12">Orders</div>
+    <div class="col text-center" th:text="#{products}"></div>
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col" th:text="#{order.date}"></th>
-            <th scope="col" th:text="#{order.total_price}"></th>
-            <th scope="col" th:text="#{order.status}"></th>
+            <th scope="col" th:text="#{product.name}"></th>
+            <th scope="col" th:text="#{product.category}"></th>
+            <th scope="col" th:text="#{product.material}"></th>
+            <th scope="col" th:text="#{product.price}"></th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="order: ${orders}">
-            <th scope="row" th:text="${order.id}"></th>
-            <td th:text="${order.dateOfCreation}"></td>
-            <td th:text="${order.totalPrice}"></td>
-            <td th:text="${order.status}"></td>
+        <tr th:each="product: ${order.products}">
+            <td th:text="${product.name}"></td>
+            <td th:text="#{${product.category}}"></td>
+            <td th:text="#{${product.material}}"></td>
+            <td th:text="${product.price}"></td>
         </tr>
         </tbody>
     </table>

@@ -2,6 +2,10 @@ body {
     font-family: "Lato", sans-serif;
 }
 
+footer {
+    margin-top: 100px;
+}
+
 .lang {
     float: right;
     color: #412E2E;

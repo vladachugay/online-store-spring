@@ -15,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,8 +28,9 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductController {
+
     private final ProductService productService;
-    private final ProductRepository productRepository;
+
 
     @GetMapping
     public String getProducts(Model model,
@@ -97,6 +97,7 @@ public class ProductController {
 
     @GetMapping("/edit/{product}")
     public String productEditForm(@PathVariable Product product, Model model) {
+        //TODO fix edit
         model.addAttribute("product", product);
         model.addAttribute("categories", ProductCategory.values());
         model.addAttribute("materials", Material.values());

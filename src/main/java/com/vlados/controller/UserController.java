@@ -1,14 +1,23 @@
 package com.vlados.controller;
 
+import com.vlados.dto.UserDTO;
+import com.vlados.entity.Order;
+import com.vlados.entity.OrderStatus;
+import com.vlados.entity.Role;
 import com.vlados.entity.User;
 import com.vlados.service.OrderService;
 import com.vlados.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,6 +25,21 @@ public class UserController {
 
     private final UserService userService;
     private final OrderService orderService;
+
+
+    @GetMapping("/registration")
+    public String getRegistration() {
+        return "registration";
+    }
+
+    @PostMapping("/registration")
+    public String register(UserDTO userDTO){
+        userDTO.setActive(true);
+        userDTO.setRole(Role.ROLE_USER.name());
+        userService.saveUser(userDTO);
+        return "redirect:/login";
+    }
+
 
     @GetMapping("/user")
     public String getUser(Model model) {
@@ -41,5 +65,26 @@ public class UserController {
     public String getAllUsers(Model model) {
         model.addAttribute("users", userService.getUsers());
         return "users";
+    }
+
+    @GetMapping("/admin")
+    public String getAdminPanel(Model model, @RequestParam(required = false) Optional<Integer> page,
+                                @RequestParam(required = false) Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        Page<Order> orderPage = orderService.getOrders(PageRequest.of(currentPage - 1, pageSize));
+        model.addAttribute("orderPage", orderPage);
+
+        int totalPages = orderPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("statuses", OrderStatus.values());
+        return "adminPanel";
     }
 }

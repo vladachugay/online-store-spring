@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -19,35 +21,50 @@
     <title>Cart</title>
 </head>
 <body>
-<div th:replace="partials/adminNav :: nav"></div>
-<div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col" th:text="#{product.name}"></th>
-            <th scope="col" th:text="#{product.category}"></th>
-            <th scope="col" th:text="#{product.material}"></th>
-            <th scope="col" th:text="#{product.price}"></th>
-            <th scope="col" th:text="#{product.delete_from_cart}"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="p: ${cart}">
-            <th scope="row" th:text="${p.id}"></th>
-            <td th:text="${p.name}"></td>
-            <td th:text="${p.category}"></td>
-            <td th:text="${p.material}"></td>
-            <td th:text="${p.price}"></td>
-            <td>
-                <form method="post" th:action="@{/deletefromcart/} + ${p.id}">
-                    <button type="submit" class="btn btn-outline-danger" th:text="#{product.delete_from_cart}"></button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
 
+<div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
+<div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
+<div sec:authorize="isAnonymous()" th:replace="partials/guestNav :: nav"></div>
+
+<div class="container">
+    <div th:if="${#lists.size(cart.cartProducts)>0}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col" th:text="#{product.name}"></th>
+                <th scope="col" th:text="#{product.category}"></th>
+                <th scope="col" th:text="#{product.material}"></th>
+                <th scope="col" th:text="#{product.price}"></th>
+                <th scope="col" th:text="#{product.delete_from_cart}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p: ${cart.cartProducts}">
+                <td th:text="${p.name}"></td>
+                <td th:text="${p.category}"></td>
+                <td th:text="${p.material}"></td>
+                <td th:text="${p.price}"></td>
+                <td>
+                    <form method="post" th:action="@{cart/delete/} + ${p.id}">
+                        <button type="submit" class="btn btn-outline-danger" th:text="#{product.delete_from_cart}"></button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="text-center font-weight-bold" th:text="#{cart.total_price} +  ${cart.totalPrice}"></p>
+        <div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
+            <form method="post" action="/orders/create">
+                <button class="btn btn-outline-success" th:text="#{create_order}" type="submit"></button>
+            </form>
+        </div>
+    </div>
+    <p class="text-center font-weight-bold my-3" th:if="${#lists.size(cart.cartProducts)==0}" th:text="#{cart_empty}"></p>
+    <center sec:authorize="isAnonymous()">
+        <p class="text-center" th:text="#{login_to_order}"></p>
+        <a href="/login" class="btn btn-secondary" th:text="#{login}"></a>
+    </center>
+</div>
+<div th:replace="partials/footer :: footer"></div>
 </body>
 </html>

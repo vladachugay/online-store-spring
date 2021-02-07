@@ -75,4 +75,9 @@ public class ProductService {
             case PRICE_LOW_TO_HIGH: products.sort(Comparator.comparing(Product::getPrice)); break;
         }
     }
+
+    public void incrementAmount(Product product) {
+        //TODO catch exception (product doesnt exist or not enough products)
+        productRepository.incrementAmountById(product.getId());
+    }
 }

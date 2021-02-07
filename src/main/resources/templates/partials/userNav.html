@@ -29,10 +29,15 @@
                 </div>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="/registration" th:text="#{registration}"></a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/login" th:text="#{login}"></a>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="drop" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{my_account}">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/user/" th:text="#{my_account}"></a></li>
+                        <li><a class="dropdown-item" href="/logout" th:text="#{logout}"></a></li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </div>
