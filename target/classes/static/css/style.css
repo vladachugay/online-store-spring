@@ -6,6 +6,13 @@ footer {
     margin-top: 100px;
 }
 
+.content-form {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
 .lang {
     float: right;
     color: #412E2E;
@@ -58,7 +65,7 @@ footer {
     }
 
     .login-form{
-        margin-top: 30%;
+        margin-top: 20%;
     }
 
     .register-form{

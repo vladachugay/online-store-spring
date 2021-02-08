@@ -12,9 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,7 +33,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-
     @GetMapping
     public String getProducts(Model model,
                               @RequestParam(required = false) Optional<Integer> page,
@@ -43,8 +44,10 @@ public class ProductController {
                               @RequestParam(name = "price_to", defaultValue = "100000") BigDecimal to) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(9);
+
         Page<Product> productPage = productService.getFilteredProducts(PageRequest.of(currentPage - 1, pageSize),
                 material, category, from, to, sortCriteria);
+
         model.addAttribute("productPage", productPage);
         model.addAttribute("material", material);
         model.addAttribute("category", category);
@@ -68,36 +71,25 @@ public class ProductController {
     }
 
     @GetMapping("/add")
-    public String productAddForm(Model model) {
+    public String productAddForm(@ModelAttribute ProductDTO productDTO, Model model) {
         model.addAttribute("categories", ProductCategory.values());
-
-
         model.addAttribute("materials", Material.values());
         return "addProduct";
     }
 
     @PostMapping("/add")
-    public String addProduct(ProductDTO productDTO,
-                             @RequestParam("file") MultipartFile file) throws IOException {
-//        if (file != null && !file.getOriginalFilename().isEmpty()) {
-//
-//            String uuidFile = UUID.randomUUID().toString();
-//            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-//
-//            file.transferTo(new File(resultFilename));
-//
-//            productDTO.setPicPath(resultFilename);
-//        }
-        productDTO.setDate(LocalDateTime.now());
-        //TODO save picture to add directory
-        //TODO validate product
-        productService.saveProduct(new Product(productDTO));
+    public String addProduct(@Valid @ModelAttribute ProductDTO productDTO,
+                             BindingResult bindingResult,
+                             @RequestParam("file") MultipartFile file) {
+        if (bindingResult.hasErrors())
+            return "addProduct";
+        //TODO save picture
+        productService.saveProduct(productDTO);
         return "redirect:/products";
     }
 
     @GetMapping("/edit/{product}")
     public String productEditForm(@PathVariable Product product, Model model) {
-        //TODO fix edit
         model.addAttribute("product", product);
         model.addAttribute("categories", ProductCategory.values());
         model.addAttribute("materials", Material.values());
@@ -105,15 +97,15 @@ public class ProductController {
         return "editProduct";
     }
 
-    @PostMapping("edit/{product}")
-    public String editProduct(@PathVariable Product product, @RequestParam("file") MultipartFile file,
-                              @RequestParam("name") String name){
-
-        //TODO convert file to picPath
-        //TODO fill product with new values to update it
-        product.setName(name);
-        System.out.println(product);
-        productService.updateProduct(product);
+    @PostMapping("edit/{productId}")
+    public String editProduct(@ModelAttribute @Valid Product product,
+                              BindingResult bindingResult,
+                              @PathVariable Long productId,
+                              @RequestParam("file") MultipartFile file){
+        if (bindingResult.hasErrors())
+            return "editProduct";
+        //TODO save file
+        productService.updateProduct(productId, product);
         return "redirect:/products";
     }
 

@@ -1,10 +1,12 @@
 package com.vlados.service;
 
+import com.vlados.dto.ProductDTO;
 import com.vlados.entity.Material;
 import com.vlados.entity.Product;
 import com.vlados.entity.ProductCategory;
 import com.vlados.entity.SortCriteria;
 import com.vlados.repository.ProductRepository;
+import com.vlados.util.ExceptionKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,25 +48,32 @@ public class ProductService {
         return new PageImpl<>(products.subList(fromIndex, toIndex), pageable, products.size());
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public void saveProduct(ProductDTO productDTO) {
+        productDTO.setDate(LocalDateTime.now());
+        System.out.println(productDTO.getDate());
+        //TODO date isn't saved
+        try {
+            productRepository.save(new Product(productDTO));
+        } catch (Exception e) {
+            //TODO handle exception
+//            throw new DuplicateNameException(ExceptionKeys.DUPLICATE_NAME);
+        }
+
     }
 
-    public void saveProduct(Product product) {
-            productRepository.save(product);
-    }
-
-    public void updateProduct(Product product) {
-        productRepository.updateProductById(product.getId(), product.getName(),
+    public void updateProduct(Long productId, Product product) {
+        productRepository.updateProductById(productId, product.getName(),
                 product.getCategory(),
                 product.getMaterial(),
                 product.getPicPath(),
                 product.getPrice(),
-                product.getDescription());
+                product.getDescription(),
+                product.getAmount());
     }
 
     public void deleteProduct(Product product) {
         productRepository.delete(product);
+        //TODO handle exception (FK)
     }
 
     private void sortProducts (List<Product> products, SortCriteria sortCriteria) {

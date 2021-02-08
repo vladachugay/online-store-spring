@@ -1,6 +1,7 @@
 package com.vlados.service;
 
 import com.vlados.dto.UserDTO;
+import com.vlados.entity.Role;
 import com.vlados.entity.User;
 import com.vlados.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +43,13 @@ public class UserService implements UserDetailsService {
     }
 
     public void saveUser(UserDTO userDTO) {
-        User user = new User(userDTO);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDTO.setActive(true);
+        userDTO.setRole(Role.ROLE_USER.name());
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         try {
-            userRepository.save(user);
+            userRepository.save(new User(userDTO));
         } catch (Exception e) {
-            //TODO add exception
+            //TODO handle exception (duplicate username)
             System.err.println("Cant add new user");
         }
     }

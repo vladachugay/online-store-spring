@@ -20,7 +20,7 @@
             crossorigin="anonymous"></script>
     <title th:text="#{order}"></title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
 <div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>

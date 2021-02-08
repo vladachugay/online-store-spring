@@ -12,8 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,18 +30,19 @@ public class UserController {
 
 
     @GetMapping("/registration")
-    public String getRegistration() {
+    public String getRegistration(@ModelAttribute UserDTO userDTO) {
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String register(UserDTO userDTO){
-        userDTO.setActive(true);
-        userDTO.setRole(Role.ROLE_USER.name());
+    public String register(@Valid @ModelAttribute UserDTO userDTO, BindingResult bindingResult){
+        if (bindingResult.hasErrors())
+            return "registration";
+
         userService.saveUser(userDTO);
         return "redirect:/login";
-    }
 
+    }
 
     @GetMapping("/user")
     public String getUser(Model model) {

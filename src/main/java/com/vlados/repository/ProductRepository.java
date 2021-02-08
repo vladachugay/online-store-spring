@@ -26,15 +26,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "p.material = :material, " +
             "p.picPath = :picPath, " +
             "p.price = :price, " +
-            "p.description = :description " +
-            "where p.id = :id")
+            "p.description = :description," +
+            "p.amount = :amount " +
+            "where p.id = :id ")
     void updateProductById(@Param(value = "id") Long id,
                                    @Param(value = "name") String name,
                                    @Param(value = "category") ProductCategory category,
                                    @Param(value = "material") Material material,
                                    @Param(value = "picPath") String picPath,
                                    @Param(value = "price") BigDecimal price,
-                                   @Param(value = "description") String description);
+                                   @Param(value = "description") String description,
+                                   @Param(value = "amount") Integer amount);
 
     List<Product> findProductsByMaterialAndCategoryAndPriceBetween(@Param(value = "material") Material material,
                                                                    @Param(value = "category") ProductCategory category,

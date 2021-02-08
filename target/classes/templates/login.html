@@ -20,12 +20,25 @@
             crossorigin="anonymous"></script>
     <title th:text="#{login}"></title>
 </head>
-<body>
+
+<nav>
+    <div class="lang">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{lang}">
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="?lang=en" th:text="#{lang.en}"></a>
+            <a class="dropdown-item" href="?lang=ua" th:text="#{lang.ua}"></a>
+        </div>
+    </div>
+</nav>
+
+<body class="d-flex flex-column min-vh-100">
 
 <div class="sidenav">
     <div class="login-main-text">
-        <h2>Log in</h2>
-        <p>Login or register from here to access.</p>
+        <h2 th:text="#{login}"></h2>
+        <p th:text="#{login_or_register}"></p>
     </div>
 </div>
 <div class="main">

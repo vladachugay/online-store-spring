@@ -20,7 +20,7 @@
             crossorigin="anonymous"></script>
     <title>Cart</title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
 <div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
@@ -53,17 +53,20 @@
             </tbody>
         </table>
         <p class="text-center font-weight-bold" th:text="#{cart.total_price} +  ${cart.totalPrice}"></p>
-        <div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
+        <div align="center" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
             <form method="post" action="/orders/create">
                 <button class="btn btn-outline-success" th:text="#{create_order}" type="submit"></button>
             </form>
         </div>
     </div>
     <p class="text-center font-weight-bold my-3" th:if="${#lists.size(cart.cartProducts)==0}" th:text="#{cart_empty}"></p>
-    <center sec:authorize="isAnonymous()">
+    <div class="my-2" align="center">
+        <a href="/products" class="btn btn-light" th:text="#{back_to_products}"></a>
+    </div>
+    <div class="mt-4" align="center" sec:authorize="isAnonymous()">
         <p class="text-center" th:text="#{login_to_order}"></p>
         <a href="/login" class="btn btn-secondary" th:text="#{login}"></a>
-    </center>
+    </div>
 </div>
 <div th:replace="partials/footer :: footer"></div>
 </body>

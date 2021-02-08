@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
@@ -31,37 +31,46 @@
         </div>
     </div>
 </nav>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <div class="sidenav">
     <div class="login-main-text">
-        <h2>Registration Page</h2>
-        <p>Login or register from here to access.</p>
+        <h2 th:text="#{registration}"></h2>
+        <p th:text="#{login_or_register}"></p>
     </div>
 </div>
 <div class="main">
     <div class="col-md-6 col-sm-12">
 
         <div class="login-form">
-            <form method="post" action="/registration">
+            <form method="post" action="/registration" th:object="${userDTO}">
                 <div class="form-group">
                     <label th:text="#{fullName}"></label>
-                    <input type="text" name="fullName" id="fullName" class="form-control" placeholder="Full Name">
+                    <input type="text" th:field="*{fullName}" id="fullName" class="form-control" th:placeholder="#{fullName}">
+                    <div style="color:red" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
                 </div>
                 <div class="form-group">
                     <label th:text="#{username}"></label>
-                    <input type="text" name="username" id="username" class="form-control" placeholder="Username">
+                    <input type="text" th:field="*{username}" id="username" class="form-control" th:placeholder="#{username}">
+                    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                 </div>
                 <div class="form-group">
                     <label th:text="#{email}"></label>
-                    <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+                    <input type="email" th:field="*{email}" id="email" class="form-control" th:placeholder="#{email}">
+                    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
                 </div>
                 <div class="form-group">
                     <label th:text="#{phoneNumber}"></label>
-                    <input type="tel" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="Phone Number">
+                    <input type="tel" th:field="*{phoneNumber}" id="phoneNumber" class="form-control"
+                           th:placeholder="#{phoneNumber}">
+                    <div style="color:red" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+
                 </div>
                 <div class="form-group">
                     <label th:text="#{password}"></label>
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+                    <input type="password" th:field="*{password}" id="password" class="form-control" th:placeholder="#{password}">
+                    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
                 </div>
                 <button type="submit" class="btn btn-pink">[[#{registration}]]</button>
                 <a href="/login" class="btn btn-pink">[[#{login}]]</a>

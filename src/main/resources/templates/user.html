@@ -20,7 +20,7 @@
             crossorigin="anonymous"></script>
     <title>Product</title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <div sec:authorize="hasRole('ROLE_ADMIN')" th:replace="partials/adminNav :: nav"></div>
 <div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
 
@@ -59,7 +59,7 @@
         <tbody>
         <tr th:each="order: ${orders}">
             <th scope="row" th:text="${order.id}"></th>
-            <td th:text="${order.dateOfCreation}"></td>
+            <td th:text="${order.creationDate}"></td>
             <td th:text="${order.totalPrice}"></td>
             <td th:text="${order.status}"></td>
         </tr>
