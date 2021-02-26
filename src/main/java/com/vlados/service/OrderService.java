@@ -4,6 +4,7 @@ import com.vlados.dto.OrderDTO;
 import com.vlados.entity.*;
 import com.vlados.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -22,38 +24,57 @@ public class OrderService {
     private final ProductService productService;
 
     public Page<Order> getOrders(Pageable pageable) {
-        return orderRepository.findAll(pageable);
+        try {
+            return orderRepository.findAll(pageable);
+        } catch (Exception e) {
+            log.error("{} while getting orders", e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     public List<Order> getOrdersByUser(User user) {
-        return orderRepository.findAllByUser(user);
+        try {
+            return orderRepository.findAllByUser(user);
+        } catch (Exception e) {
+            log.error("{} while getting orders for user {}", e.getMessage(), user.getUsername());
+            throw new RuntimeException();
+        }
     }
 
     @Transactional
     public void createOrder(Cart cart) {
         productService.decrementAmountForProducts(new ArrayList<>(cart.getCartProducts()));
-
-        saveNewOrder(OrderDTO.builder()
-                .totalPrice(cart.getTotalPrice())
-                .creationDate(LocalDateTime.now())
-                .status(OrderStatus.REGISTERED)
-                .user(userService.getCurrentUser())
-                .products(cart.getCartProducts()).build());
+        try {
+            orderRepository.save(new Order(OrderDTO.builder()
+                    .totalPrice(cart.getTotalPrice())
+                    .creationDate(LocalDateTime.now())
+                    .status(OrderStatus.REGISTERED)
+                    .user(userService.getCurrentUser())
+                    .products(cart.getCartProducts()).build()));
+        } catch (Exception e) {
+            log.error("{} while creating new order", e.getMessage());
+            throw new RuntimeException();
+        }
     }
-
-    private void saveNewOrder(OrderDTO orderDTO) {
-        orderRepository.save(new Order(orderDTO));
-    }
-
 
     public void setStatusPaid(Order order) {
-        orderRepository.setStatusPaid(order.getId());
+        try {
+            orderRepository.setStatusPaid(order.getId());
+        } catch (Exception e) {
+            log.error("{} while changing order status to paid (order id - {})", e.getMessage(), order.getId());
+            throw new RuntimeException();
+        }
     }
 
     @Transactional
     public void cancelOrder(Order order) {
-        orderRepository.setStatusCanceled(order.getId());
         productService.incrementAmountForProducts(new ArrayList<>(order.getProducts()));
-    }
 
+        try {
+            orderRepository.setStatusCanceled(order.getId());
+        } catch (Exception e) {
+            log.error("{} while changing order status canceled (order id - {})", e.getMessage(), order.getId());
+            throw new RuntimeException();
+        }
+    }
 }

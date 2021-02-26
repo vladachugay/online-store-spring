@@ -5,9 +5,14 @@ import com.vlados.entity.Material;
 import com.vlados.entity.Product;
 import com.vlados.entity.ProductCategory;
 import com.vlados.entity.SortCriteria;
+import com.vlados.exception.store_exc.CantDeleteBecauseOfOrderException;
+import com.vlados.exception.store_exc.DuplicateProductNameException;
+import com.vlados.exception.store_exc.NotEnoughProductsException;
 import com.vlados.repository.ProductRepository;
 import com.vlados.util.ExceptionKeys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class ProductService {
 
@@ -51,30 +57,36 @@ public class ProductService {
 
     public void saveProduct(ProductDTO productDTO) {
         productDTO.setDate(LocalDateTime.now());
-        System.out.println(productDTO.getDate());
-        //TODO date isn't saved
         try {
             productRepository.save(new Product(productDTO));
         } catch (Exception e) {
-            //TODO handle exception
-//            throw new DuplicateNameException(ExceptionKeys.DUPLICATE_NAME);
+            log.error("{} while saving new product", e.getMessage());
+            throw new DuplicateProductNameException(ExceptionKeys.DUPLICATE_PRODUCT_NAME);
         }
-
     }
 
     public void updateProduct(Long productId, Product product) {
-        productRepository.updateProductById(productId, product.getName(),
-                product.getCategory(),
-                product.getMaterial(),
-                product.getPicPath(),
-                product.getPrice(),
-                product.getDescription(),
-                product.getAmount());
+        try {
+            productRepository.updateProductById(productId, product.getName(),
+                    product.getCategory(),
+                    product.getMaterial(),
+                    product.getPicPath(),
+                    product.getPrice(),
+                    product.getDescription(),
+                    product.getAmount());
+        } catch (Exception e) {
+            log.error("{} while updating product with id {}", e.getMessage(), productId);
+            throw new DuplicateProductNameException(ExceptionKeys.DUPLICATE_PRODUCT_NAME);
+        }
     }
 
     public void deleteProduct(Product product) {
-        productRepository.delete(product);
-        //TODO handle exception (FK)
+        try {
+            productRepository.delete(product);
+        } catch (RuntimeException e) {
+            log.error("{} while trying to delete product with id {}", e.getMessage(), product.getId());
+            throw new CantDeleteBecauseOfOrderException(ExceptionKeys.CANT_DELETE_BECAUSE_OF_ORDER);
+        }
     }
 
     private void sortProducts (List<Product> products, SortCriteria sortCriteria) {
@@ -88,16 +100,26 @@ public class ProductService {
     }
 
     public void incrementAmountForProducts(List<Product> products) {
-        productRepository.incrementAmountById(
-                products.stream()
-                .map(Product::getId)
-                .collect(Collectors.toList()));
+        try {
+            productRepository.incrementAmountById(
+                    products.stream()
+                            .map(Product::getId)
+                            .collect(Collectors.toList()));
+        } catch (Exception e) {
+            log.error("{} while trying to increment product amount", e.getMessage());
+            throw new NotEnoughProductsException(ExceptionKeys.NOT_ENOUGH_PRODUCTS);
+        }
     }
 
     public void decrementAmountForProducts(List<Product> products) {
-        productRepository.decrementAmountById(
-                products.stream()
-                        .map(Product::getId)
-                        .collect(Collectors.toList()));
+        try {
+            productRepository.decrementAmountById(
+                    products.stream()
+                            .map(Product::getId)
+                            .collect(Collectors.toList()));
+        } catch (Exception e) {
+            log.error("{} while trying to decrement product amount", e.getMessage());
+            throw new RuntimeException();
+        }
     }
 }

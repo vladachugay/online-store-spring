@@ -3,8 +3,12 @@ package com.vlados.service;
 import com.vlados.dto.UserDTO;
 import com.vlados.entity.Role;
 import com.vlados.entity.User;
+import com.vlados.exception.store_exc.DuplicateUsernameException;
+import com.vlados.exception.store_exc.login_exc.UserDoesntExist;
 import com.vlados.repository.UserRepository;
+import com.vlados.util.ExceptionKeys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -24,22 +28,18 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException("Username " + username + "not found"));
-
+        return userRepository.findByUsername(username).orElseThrow(() -> {
+            log.error("User with username {} doesnt exits", username);
+            throw new UserDoesntExist(ExceptionKeys.USER_DOESNT_EXIST);
+        });
     }
 
-    public User getCurrentUser()  {
-        //TODO handle exception
-        //TODO avoid returning null
-        try {
-            return userRepository.findByUsername(
-                    SecurityContextHolder.getContext().getAuthentication().getName()
-            ).orElseThrow(Exception::new);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public User getCurrentUser() {
+        return userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> {
+                    log.error("Can't get current user");
+                    throw new RuntimeException();
+                });
     }
 
     public void saveUser(UserDTO userDTO) {
@@ -49,21 +49,35 @@ public class UserService implements UserDetailsService {
         try {
             userRepository.save(new User(userDTO));
         } catch (Exception e) {
-            //TODO handle exception (duplicate username)
-            System.err.println("Cant add new user");
-            System.err.println(e.getMessage());
+            log.error("{} while saving new user", e.getMessage());
+            throw new DuplicateUsernameException(ExceptionKeys.DUPLICATE_USERNAME);
         }
     }
 
     public List<User> getUsers() {
-        return userRepository.findAll();
+        try {
+            return userRepository.findAll();
+        } catch (Exception e) {
+            log.error("{} while getting all user", e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     public void lockUser(User user) {
-        userRepository.lockUser(user.getUsername());
+        try {
+            userRepository.lockUser(user.getUsername());
+        } catch (Exception e) {
+            log.error("{} while trying to lock user {}", e.getMessage(), user.getUsername());
+            throw new RuntimeException();
+        }
     }
 
     public void unlockUser(User user) {
-        userRepository.unlockUser(user.getUsername());
+        try {
+            userRepository.unlockUser(user.getUsername());
+        } catch (Exception e) {
+            log.error("{} while trying to unlock user {}", e.getMessage(), user.getUsername());
+            throw new RuntimeException();
+        }
     }
 }
