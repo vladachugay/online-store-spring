@@ -23,7 +23,7 @@ public class UserDTO {
 
 
     @NotEmpty(message = "{fullname.not_empty}")
-    @Size(min = 6, max = 50, message = "{fullname.size}")
+    @Size(min = 4, max = 50, message = "{fullname.size}")
     private String fullName;
 
     @NotEmpty(message = "{email.not_empty}")

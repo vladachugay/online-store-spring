@@ -10,9 +10,9 @@
     </parent>
 
     <groupId>com.vlados</groupId>
-    <artifactId>serving-web-content</artifactId>
+    <artifactId>online-store-spring</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>serving-web-content</name>
+    <name>online-store-spring</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
