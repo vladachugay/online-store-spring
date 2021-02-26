@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +31,7 @@ public class OrderService {
 
     @Transactional
     public void createOrder(Cart cart) {
-        cart.getCartProducts().forEach(productService::incrementAmount);
+        productService.decrementAmountForProducts(new ArrayList<>(cart.getCartProducts()));
 
         saveNewOrder(OrderDTO.builder()
                 .totalPrice(cart.getTotalPrice())
@@ -44,7 +45,15 @@ public class OrderService {
         orderRepository.save(new Order(orderDTO));
     }
 
-    public void changeStatus(OrderStatus status, Order order) {
-        orderRepository.changeStatus(status, order.getId());
+
+    public void setStatusPaid(Order order) {
+        orderRepository.setStatusPaid(order.getId());
     }
+
+    @Transactional
+    public void cancelOrder(Order order) {
+        orderRepository.setStatusCanceled(order.getId());
+        productService.incrementAmountForProducts(new ArrayList<>(order.getProducts()));
+    }
+
 }

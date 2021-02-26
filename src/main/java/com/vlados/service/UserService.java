@@ -51,6 +51,7 @@ public class UserService implements UserDetailsService {
         } catch (Exception e) {
             //TODO handle exception (duplicate username)
             System.err.println("Cant add new user");
+            System.err.println(e.getMessage());
         }
     }
 

@@ -17,7 +17,6 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Page<Product> findByOrderByName(Pageable pageable);
 
     @Transactional
     @Modifying
@@ -54,9 +53,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findProductsByPriceBetween(@Param(value = "from") BigDecimal from,
                                            @Param(value = "to") BigDecimal to);
 
+
     @Transactional
     @Modifying
-    @Query("update products p set p.amount = p.amount - 1 where p.id = :id")
-    void incrementAmountById(@Param(value = "id") Long id);
+    @Query("update products p set p.amount = p.amount - 1 where p.id in (:ids)")
+    void decrementAmountById(@Param("ids") List<Long> ids);
 
+    @Transactional
+    @Modifying
+    @Query("update products p set p.amount = p.amount + 1 where p.id in (:ids)")
+    void incrementAmountById(@Param("ids") List<Long> ids);
 }

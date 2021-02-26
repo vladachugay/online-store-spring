@@ -5,7 +5,6 @@ import com.vlados.entity.Material;
 import com.vlados.entity.Product;
 import com.vlados.entity.ProductCategory;
 import com.vlados.entity.SortCriteria;
-import com.vlados.repository.ProductRepository;
 import com.vlados.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

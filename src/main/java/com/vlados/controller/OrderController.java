@@ -53,10 +53,15 @@ public class OrderController {
         return "order";
     }
 
-    @PostMapping("/orders/changestatus/{order}")
-    public String changeStatus(@RequestParam OrderStatus status,
-                               @PathVariable Order order) {
-        orderService.changeStatus(status, order);
+    @PostMapping("/orders/pay/{order}")
+    public String setPaid(@PathVariable Order order) {
+        orderService.setStatusPaid(order);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/orders/cancel/{order}")
+    public String cancelOrder(@PathVariable Order order) {
+        orderService.cancelOrder(order);
         return "redirect:/admin";
     }
 }

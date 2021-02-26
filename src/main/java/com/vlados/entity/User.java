@@ -31,7 +31,7 @@ public class User implements UserDetails {
     private String username;
 
     @NotEmpty(message = "{password.not_empty}")
-    @Size(min = 4, max = 25, message = "{password.size}")
+//    @Size(min = 4, max = 25, message = "{password.size}")
     private String password;
 
 

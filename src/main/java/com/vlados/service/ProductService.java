@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,8 +87,17 @@ public class ProductService {
         }
     }
 
-    public void incrementAmount(Product product) {
-        //TODO catch exception (product doesnt exist or not enough products)
-        productRepository.incrementAmountById(product.getId());
+    public void incrementAmountForProducts(List<Product> products) {
+        productRepository.incrementAmountById(
+                products.stream()
+                .map(Product::getId)
+                .collect(Collectors.toList()));
+    }
+
+    public void decrementAmountForProducts(List<Product> products) {
+        productRepository.decrementAmountById(
+                products.stream()
+                        .map(Product::getId)
+                        .collect(Collectors.toList()));
     }
 }

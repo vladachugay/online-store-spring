@@ -48,17 +48,17 @@
                 <td th:text="${order.totalPrice}"></td>
                 <td th:text="${order.status}"></td>
                 <td>
-                    <form method="post" th:action="@{/orders/changestatus/} + ${order.id}">
-                        <select class="custom-select form-select-sm" name="status" id="status">
-                            <option th:each="status: ${statuses}"
-                                    th:value="${status.name()}"
-                                    th:selected="${status==order.status}"
-                                    th:text="#{${status}}"></option>
-                        </select>
-                        <button type="submit" class="btn btn-outline-success btn-sm my-2" th:text="#{change_status}"></button>
-                    </form>
+                    <div th:if="${order.status.name().equals('REGISTERED')}" >
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <form method="post" th:action="@{/orders/pay/} + ${order.id}">
+                            <button type="submit" class="btn btn-outline-success mr-1" th:text="#{order.set_paid}"></button>
+                            </form>
+                            <form method="post" th:action="@{/orders/cancel/} + ${order.id}">
+                            <button type="submit" class="btn btn-outline-danger ml-1" th:text="#{order.cancel}"></button>
+                            </form>
+                        </div>
+                    </div>
                 </td>
-
             </tr>
             </tbody>
         </table>
