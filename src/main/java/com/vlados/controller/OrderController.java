@@ -30,7 +30,7 @@ public class OrderController {
     public String addToCart(@PathVariable Product product) {
         cart.addProduct(product);
         //TODO return valid page
-        return "redirect:/products/" + product.getId();
+        return "redirect:/cart";
     }
 
     @PostMapping("cart/delete/{product}")

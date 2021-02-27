@@ -27,30 +27,39 @@
 <div sec:authorize="isAnonymous()" th:replace="partials/guestNav :: nav"></div>
 
 <div class="container">
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col">
-           <ul>
-               <li>
-                   <p th:text="${product.name}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.category}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.material}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.description}"></p>
-               </li>
-               <li>
-                   <p th:text="${product.price}"></p>
-               </li>
-           </ul>
+            <ul>
+                <li class="list-group-item">
+                    <label for="name" class="font-weight-light" th:text="#{product.name}"></label>
+                    <p id="name" th:text="${product.name}"></p>
+                </li>
+                <li class="list-group-item">
+                    <label for="category" class="font-weight-light" th:text="#{product.category}"></label>
+                    <p id="category" th:text="${product.category}"></p>
+                </li>
+                <li class="list-group-item">
+                    <label for="material" class="font-weight-light" th:text="#{product.material}"></label>
+                    <p id="material" th:text="${product.material}"></p>
+                </li>
+                <li class="list-group-item">
+                    <label for="description" class="font-weight-light" th:text="#{product.description}"></label>
+                    <p id="description" th:text="${product.description}"></p>
+                </li>
+                <li class="list-group-item">
+                    <label for="price" class="font-weight-light" th:text="#{product.price}"></label>
+                    <p id="price" th:text="${product.price}"></p>
+                </li>
+            </ul>
+            <div class="row justify-content-center" th:text="#{product.available} + ${product.amount}"></div>
+            <div class="row justify-content-center mt-2">
+                <form method="post" th:action="@{/cart/add/} + ${product.id}">
+                    <button class="btn btn-pink" type="submit" th:disabled="${product.amount} <= 0" th:text="#{product.add_to_cart}"></button>
+                </form>
+            </div>
         </div>
+
     </div>
-    <form method="post" th:action="@{/cart/add/} + ${product.id}">
-        <button class="btn btn-pink" type="submit" th:disabled="product.amount==0" th:text="#{product.add_to_cart}"></button>
-    </form>
 </div>
 <div th:replace="partials/footer :: footer"></div>
 </body>
