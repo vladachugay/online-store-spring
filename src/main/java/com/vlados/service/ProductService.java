@@ -70,7 +70,6 @@ public class ProductService {
             productRepository.updateProductById(productId, product.getName(),
                     product.getCategory(),
                     product.getMaterial(),
-                    product.getPicPath(),
                     product.getPrice(),
                     product.getDescription(),
                     product.getAmount());

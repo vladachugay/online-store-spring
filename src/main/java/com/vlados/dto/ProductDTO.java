@@ -21,9 +21,9 @@ public class ProductDTO {
     @NotEmpty(message = "{productName.empty}")
     private String name;
 
+
     private ProductCategory category;
     private Material material;
-    private String picPath;
     private LocalDateTime date;
 
     @DecimalMin(value = "0.01", message = "{price.min}")

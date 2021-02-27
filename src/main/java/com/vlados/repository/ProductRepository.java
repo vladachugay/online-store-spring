@@ -23,7 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("update products p set p.name = :name, " +
             "p.category = :category, " +
             "p.material = :material, " +
-            "p.picPath = :picPath, " +
             "p.price = :price, " +
             "p.description = :description," +
             "p.amount = :amount " +
@@ -32,7 +31,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                    @Param(value = "name") String name,
                                    @Param(value = "category") ProductCategory category,
                                    @Param(value = "material") Material material,
-                                   @Param(value = "picPath") String picPath,
                                    @Param(value = "price") BigDecimal price,
                                    @Param(value = "description") String description,
                                    @Param(value = "amount") Integer amount);

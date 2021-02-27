@@ -86,7 +86,6 @@
     <div class="row">
         <div th:each="product: ${productPage}" class="col-md-4 my-3">
             <div class="card">
-                <img class="card-img-top" th:src="${product.picPath}">
                 <div class="card-body">
                     <h5 class="card-title"><a th:href="@{/products/} + ${product.id}" th:text="${product.name}"></a>
                     </h5>

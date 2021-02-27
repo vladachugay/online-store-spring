@@ -39,7 +39,6 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Material material;
 
-    private String picPath;
     private LocalDateTime date;
     private String description;
 
@@ -59,7 +58,6 @@ public class Product {
         category = productDTO.getCategory();
         price = productDTO.getPrice();
         amount = productDTO.getAmount();
-        picPath = productDTO.getPicPath();
         material = productDTO.getMaterial();
         description = productDTO.getDescription();
         date = productDTO.getDate();
@@ -85,7 +83,6 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", category=" + category +
                 ", material=" + material +
-                ", picPath='" + picPath + '\'' +
                 ", date=" + date +
                 ", description='" + description + '\'' +
                 ", price=" + price +

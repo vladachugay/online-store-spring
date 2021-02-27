@@ -76,11 +76,9 @@ public class ProductController {
 
     @PostMapping("/add")
     public String addProduct(@Valid @ModelAttribute ProductDTO productDTO,
-                             BindingResult bindingResult,
-                             @RequestParam("file") MultipartFile file) {
+                             BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return "addProduct";
-        //TODO save picture
         productService.saveProduct(productDTO);
         return "redirect:/products";
     }
