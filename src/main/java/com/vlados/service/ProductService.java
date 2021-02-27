@@ -106,7 +106,7 @@ public class ProductService {
                             .collect(Collectors.toList()));
         } catch (Exception e) {
             log.error("{} while trying to increment product amount", e.getMessage());
-            throw new NotEnoughProductsException(ExceptionKeys.NOT_ENOUGH_PRODUCTS);
+            throw new RuntimeException();
         }
     }
 
@@ -118,7 +118,7 @@ public class ProductService {
                             .collect(Collectors.toList()));
         } catch (Exception e) {
             log.error("{} while trying to decrement product amount", e.getMessage());
-            throw new RuntimeException();
+            throw new NotEnoughProductsException(ExceptionKeys.NOT_ENOUGH_PRODUCTS);
         }
     }
 }

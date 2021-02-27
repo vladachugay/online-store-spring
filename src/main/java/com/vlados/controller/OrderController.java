@@ -4,6 +4,7 @@ import com.vlados.entity.Cart;
 import com.vlados.entity.Order;
 import com.vlados.entity.OrderStatus;
 import com.vlados.entity.Product;
+import com.vlados.exception.StoreException;
 import com.vlados.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,6 @@ public class OrderController {
     @PostMapping("cart/add/{product}")
     public String addToCart(@PathVariable Product product) {
         cart.addProduct(product);
-        //TODO return valid page
         return "redirect:/cart";
     }
 
@@ -40,8 +40,14 @@ public class OrderController {
     }
 
     @PostMapping("orders/create")
-    public String createOrder() {
-        orderService.createOrder(cart);
+    public String createOrder(Model model) {
+        try {
+            orderService.createOrder(cart);
+        } catch (Exception e) {
+            model.addAttribute("cart", cart);
+            model.addAttribute("error_msg", e.getMessage());
+            return "cart";
+        }
         cart.clear();
         return "redirect:/cart";
     }
@@ -49,7 +55,6 @@ public class OrderController {
     @GetMapping("/orders/{order}")
     public String getOrder(@PathVariable Order order, Model model) {
         model.addAttribute("order", order);
-        //TODO some logic
         return "order";
     }
 

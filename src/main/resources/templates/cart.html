@@ -53,6 +53,9 @@
             </tbody>
         </table>
         <p class="text-center font-weight-bold" th:text="#{cart.total_price} +  ${cart.totalPrice}"></p>
+        <div th:if="${error_msg}!=null" class="alert alert-danger" role="alert"
+             th:text="#{${error_msg}}">
+        </div>
         <div align="center" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
             <form method="post" action="/orders/create">
                 <button class="btn btn-outline-success" th:text="#{create_order}" type="submit"></button>

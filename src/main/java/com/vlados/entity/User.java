@@ -31,7 +31,6 @@ public class User implements UserDetails {
     private String username;
 
     @NotEmpty(message = "{password.not_empty}")
-//    @Size(min = 4, max = 25, message = "{password.size}")
     private String password;
 
 
@@ -40,7 +39,7 @@ public class User implements UserDetails {
     private String fullName;
 
     @NotEmpty(message = "{email.not_empty}")
-    @Email
+    @Email(message = "email.valid")
     private String email;
 
     @NotEmpty(message = "{phone.not_empty}")

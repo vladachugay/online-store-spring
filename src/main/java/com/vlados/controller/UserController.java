@@ -5,6 +5,7 @@ import com.vlados.entity.Order;
 import com.vlados.entity.OrderStatus;
 import com.vlados.entity.Role;
 import com.vlados.entity.User;
+import com.vlados.exception.StoreException;
 import com.vlados.service.OrderService;
 import com.vlados.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,10 @@ import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
-public class UserController {
+public class  UserController {
 
     private final UserService userService;
     private final OrderService orderService;
-
 
     @GetMapping("/registration")
     public String getRegistration(@ModelAttribute UserDTO userDTO) {
@@ -35,11 +35,16 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public String register(@Valid @ModelAttribute UserDTO userDTO, BindingResult bindingResult){
+    public String register(@Valid @ModelAttribute UserDTO userDTO, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors())
             return "registration";
 
-        userService.saveUser(userDTO);
+        try {
+            userService.saveUser(userDTO);
+        } catch (StoreException e) {
+            model.addAttribute("error_msg", e.getMessage());
+            return "registration";
+        }
         return "redirect:/login";
 
     }

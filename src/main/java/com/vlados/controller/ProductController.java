@@ -5,6 +5,7 @@ import com.vlados.entity.Material;
 import com.vlados.entity.Product;
 import com.vlados.entity.ProductCategory;
 import com.vlados.entity.SortCriteria;
+import com.vlados.exception.StoreException;
 import com.vlados.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -76,10 +77,17 @@ public class ProductController {
 
     @PostMapping("/add")
     public String addProduct(@Valid @ModelAttribute ProductDTO productDTO,
-                             BindingResult bindingResult) {
+                             BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors())
             return "addProduct";
-        productService.saveProduct(productDTO);
+        try {
+            productService.saveProduct(productDTO);
+        } catch (StoreException e) {
+            model.addAttribute("categories", ProductCategory.values());
+            model.addAttribute("materials", Material.values());
+            model.addAttribute("error_msg", e.getMessage());
+            return "addProduct";
+        }
         return "redirect:/products";
     }
 
@@ -95,18 +103,29 @@ public class ProductController {
     @PostMapping("edit/{productId}")
     public String editProduct(@ModelAttribute @Valid Product product,
                               BindingResult bindingResult,
-                              @PathVariable Long productId,
-                              @RequestParam("file") MultipartFile file){
+                              @PathVariable Long productId, Model model){
         if (bindingResult.hasErrors())
             return "editProduct";
-        //TODO save file
-        productService.updateProduct(productId, product);
+        try {
+            productService.updateProduct(productId, product);
+        } catch (StoreException e) {
+            model.addAttribute("product", product);
+            model.addAttribute("categories", ProductCategory.values());
+            model.addAttribute("materials", Material.values());
+            model.addAttribute("error_msg", e.getMessage());
+            return "editProduct";
+        }
         return "redirect:/products";
     }
 
     @PostMapping("/delete/{product}")
-    public String deleteProduct(@PathVariable Product product) {
-        productService.deleteProduct(product);
+    public String deleteProduct(@PathVariable Product product, Model model) {
+        try {
+            productService.deleteProduct(product);
+        } catch (StoreException e) {
+            model.addAttribute("error_msg", e.getMessage());
+            return "redirect:/products?error_msg="+e.getMessage();
+        }
         return "redirect:/products";
     }
 
@@ -115,5 +134,4 @@ public class ProductController {
         model.addAttribute("product", product);
         return "product";
     }
-
 }

@@ -70,10 +70,10 @@
                     Price between
                     <div class="form-group input-group-sm">
                         <label th:text="#{price_from}" for="price_from"></label>
-                        <input type="text" name="price_from" id="price_from" class="form-control"
+                        <input type="number" required min="0" max="100000" name="price_from" id="price_from" class="form-control"
                                th:value="${price_from}">
                         <label th:text="#{price_to}" for="price_to"></label>
-                        <input type="text" name="price_to" id="price_to" class="form-control"
+                        <input type="number" required min="0" max="100000" name="price_to" id="price_to" class="form-control"
                                th:value="${price_to}">
                     </div>
                 </div>
@@ -132,5 +132,10 @@
     </nav>
 </div>
 <div th:replace="partials/footer :: footer"></div>
+<script th:if="${param.error_msg}!=null" type="text/javascript">
+    $(document).ready(function () {
+        alert('[[#{${param.error_msg}}]]');
+    });
+</script>
 </body>
 </html>
