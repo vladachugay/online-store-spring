@@ -26,7 +26,7 @@
     <form method="post" th:action="@{/products/edit/} + ${product.id}" th:object="${product}">
         <div class="form-group">
             <label th:text="#{product.name}"></label>
-            <input type="text" th:field="*{name}" id="name" class="form-control" th:placeholder="#{product.name}">
+            <input type="text" required th:field="*{name}" id="name" class="form-control" th:placeholder="#{product.name}">
             <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
 
@@ -59,13 +59,13 @@
 
         <div class="form-group">
             <label th:text="#{product.price}"></label>
-            <input type="text" th:field="*{price}" id="price" class="form-control" th:placeholder="#{product.price}">
+            <input type="number" required th:field="*{price}" id="price" class="form-control" th:placeholder="#{product.price}">
             <div style="color:red" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
         </div>
 
         <div class="form-group">
             <label th:text="#{product.amount}"></label>
-            <input type="text" th:field="*{amount}" id="amount" class="form-control" th:placeholder="#{product.amount}">
+            <input type="number" required th:field="*{amount}" id="amount" class="form-control" th:placeholder="#{product.amount}">
             <div style="color:red" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></div>
         </div>
         <div th:if="${error_msg}!=null" class="alert alert-danger" role="alert"

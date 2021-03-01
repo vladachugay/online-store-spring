@@ -41,8 +41,8 @@
             <tbody>
             <tr th:each="p: ${cart.cartProducts}">
                 <td th:text="${p.name}"></td>
-                <td th:text="${p.category}"></td>
-                <td th:text="${p.material}"></td>
+                <td th:text="#{${p.category}}"></td>
+                <td th:text="#{${p.material}}"></td>
                 <td th:text="${p.price}"></td>
                 <td>
                     <form method="post" th:action="@{cart/delete/} + ${p.id}">

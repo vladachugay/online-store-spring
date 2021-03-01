@@ -4,7 +4,7 @@ import com.vlados.dto.UserDTO;
 import com.vlados.entity.Role;
 import com.vlados.entity.User;
 import com.vlados.exception.store_exc.DuplicateUsernameException;
-import com.vlados.exception.store_exc.login_exc.UserDoesntExist;
+import com.vlados.exception.store_exc.UserDoesntExist;
 import com.vlados.repository.UserRepository;
 import com.vlados.util.ExceptionKeys;
 import lombok.RequiredArgsConstructor;

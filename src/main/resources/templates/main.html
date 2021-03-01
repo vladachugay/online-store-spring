@@ -25,27 +25,31 @@
 <div sec:authorize="hasRole('ROLE_USER')" th:replace="partials/userNav :: nav"></div>
 <div sec:authorize="isAnonymous()" th:replace="partials/guestNav :: nav"></div>
 
-<!--<div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="img/slide3.jpg" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-            <img src="img/slide1.jpg" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-            <img src="img/slide2.jpg" class="d-block w-100" alt="...">
-        </div>
-    </div>
-    <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </a>
-</div>-->
+<div class="container text-center content-form mt-5">
+    <h5>Магазин має каталог Товарів, для якого необхідно реалізувати можливість:</h5>
+    <ul class="list-unstyled">
+        <li>сортування за назвою товару (az, za);</li>
+        <li>сортування товарів за ціною (від дешевих до дорогих, від дорогих до дешевих);</li>
+        <li>сортування товарів за новизною;</li>
+        <li>вибірки товарів за параметрами (категорія, проміжок ціни, колір, розмір, тощо).</li>
+    </ul>
+    <h6>
+        Користувач переглядає каталог і може додавати товари до свого кошика.
+        Після додавання товарів у кошик, зареєстрований користувач може зробити Замовлення.
+        Для незареєстрованого користувача ця опція недоступна.
+        Після розміщення замовлення, йому (замовленню) присвоюється статус 'зареєстрований'.
+    </h6>
+    <h5>
+        Користувач має особистий кабінет, в якому може переглянути свої замовлення.
+    </h5>
+    <h5>Адміністратор системи володіє правами:</h5>
+    <ul class="list-unstyled">
+        <li>додавання/видалення товарів, зміни інформації про товар;</li>
+        <li>блокування/розблокування користувача;</li>
+        <li>переведення замовлення зі статусу 'зареєстрований' до 'оплачений' або 'скасований'.</li>
+    </ul>
+</div>
+
 <div align="center" class="my-3">
     <a href="/products" class="btn btn-secondary" th:text="#{start_shopping}"></a>
 </div>

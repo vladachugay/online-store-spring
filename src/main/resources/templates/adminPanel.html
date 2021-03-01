@@ -46,7 +46,7 @@
                 <td th:text="${order.user.email}"></td>
                 <td th:text="${order.creationDate}"></td>
                 <td th:text="${order.totalPrice}"></td>
-                <td th:text="${order.status}"></td>
+                <td th:text="#{${order.status}}"></td>
                 <td>
                     <div th:if="${order.status.name().equals('REGISTERED')}" >
                         <div class="btn-group" role="group" aria-label="Basic example">
